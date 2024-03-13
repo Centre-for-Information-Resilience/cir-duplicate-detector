@@ -1,0 +1,31 @@
+name: tests
+# run-name: ${{ github.actor }} is running unit tests
+on: [push]
+
+jobs:
+  run-tests:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e .
+      - name: Run unit tests with pytest
+        run: |
+          pytest tests/ --doctest-modules --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=html
+      - name: Cache pre-commit
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pre-commit/
+          key: pre-commit-4|${{ env.pythonLocation }}|${{ hashFiles('.pre-commit-config.yaml') }}
+      - name: Run pre-commit
+        run: SKIP="poetry-export, poetry-lock, no-commit-to-branch" pre-commit run --show-diff-on-failure --color=always --all-files
