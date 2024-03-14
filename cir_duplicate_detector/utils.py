@@ -18,7 +18,7 @@ def hex_to_binary(hex_string: str, length: int | None = None) -> str:
         str: The binary string representation of the hexadecimal string.
     """
     if hex_string == "":
-        logger.warning("Hex string is empty, returning empty string.")
+        logger.debug("Hex string is empty, returning empty string.")
         return ""
 
     # Convert hex string to an integer

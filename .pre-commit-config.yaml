@@ -19,7 +19,6 @@ repos:
   rev: v0.3.2
   hooks:
   - id: ruff
-    # args: [ --fix, --exit-non-zero-on-fix ]
     types_or: [python, pyi, jupyter]
   - id: ruff-format
     types_or: [python, pyi, jupyter]
@@ -40,5 +39,5 @@ repos:
     - id: poetry-lock
       files: "pyproject.toml"
     - id: poetry-export
-      args: ["-f", "requirements.txt", "--without-hashes", "--with", "test", "-o", "requirements.txt"]
+      args: ["-f", "requirements.txt", "--without-hashes", "--with", "dev", "-o", "requirements.txt"]
       files: "pyproject.toml"
