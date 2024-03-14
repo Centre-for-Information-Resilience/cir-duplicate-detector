@@ -55,16 +55,24 @@ def sample_data():
 
 
 @pytest.fixture
-def sample_data_expected_output():
+def expected_output():
     data = {
-        "index": ["UW0001", "UW0002", "UW0003", "UW0004", "UW0005", "UW0006", "UW0007"],
+        "index": [
+            "UW0001",
+            "UW0002",
+            "UW0003",
+            "UW0004",
+            "UW0005",
+            #   "UW0006",
+            "UW0007",
+        ],
         "url_duplicates": [
             ["UW0002", "UW0003"],
             ["UW0001", "UW0003"],
             ["UW0001", "UW0002"],
             ["UW0007"],
             pd.NA,
-            pd.NA,
+            # pd.NA,
             ["UW0004"],
         ],
         "pdq_hash_duplicates": [
@@ -73,7 +81,7 @@ def sample_data_expected_output():
             ["UW0001", "UW0002"],
             ["UW0007", "UW0005"],
             ["UW0004"],
-            pd.NA,
+            # pd.NA,
             ["UW0004"],
         ],
         "pdq_hash_similarity": [
@@ -82,13 +90,13 @@ def sample_data_expected_output():
             [1.0, 1.0],
             [0.984375, 0.98828125],
             [0.98828125],
-            pd.NA,
+            # pd.NA,
             [0.984375],
         ],
     }
 
     df = pd.DataFrame(data)
-    df = df.set_index("index")
+    df = df.set_index("index", drop=False)
 
     return df
 

@@ -4,10 +4,9 @@
 [![Checked with mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/)
 
 # Duplicate Detector - for CIR
-
-As part of [BigData Republic](https://bigdatarepublic.nl/) Social Good Initiative, [Sam Sweere](https://github.com/SamSweere) developed this package to help the CIR team to detect & mark (possible) duplicate entries. There are two kinds of duplicates that we are looking for:
-- **URL duplicates**: These are entries that have the same URL. The url is parsed such that the parameters are removed and the url is normalized.
+As part of [BigData Republic](https://bigdatarepublic.nl/) Social Good Initiative, [Sam Sweere](https://github.com/SamSweere) developed this package to help the CIR team to detect & mark (possible) duplicate entries. There are two kinds of duplicates that the package can detect:
 - **PDQ hash fuzzy duplicates**: These are entries with similar PDQ hashes, and are likely to be similar images.
+- **URL duplicates**: These are entries that have the same URL. The url is parsed such that the parameters are removed and the url is normalized.
 
 ## PDQ Duplicate Detection
 The PDQ algorithm was developed and open-sourced by Facebook (now Meta) in 2019. It is a perceptual hash function that can be used to identify similar images. For example, if an image is cropped, resized, or slightly altered, the PDQ hash will still be similar to the original image.
@@ -56,8 +55,8 @@ When `indices_to_check` is provided, only the rows with these indices are checke
 
 ### Example Usage
 ```python
-from cir_duplicate_detector import find_duplicates
-duplicates_df = find_duplicates(df, indices_to_check=None, pdq_hash_similarity_threshold=0.8)
+from cir_duplicate_detector import detect_duplicates
+duplicates_df = detect_duplicates(df, indices_to_check=None, pdq_hash_similarity_threshold=0.8)
 ```
 
 ## PDQ Hash Similarity Detection Approach

@@ -33,17 +33,15 @@ def detect_duplicates(
     pd.DataFrame: DataFrame with columns indicating duplicates.
     """
     # Validate input DataFrame
-    if df.index.name is None:
-        raise ValueError("The DataFrame index is not set.")
-
     if "url" not in df.columns and "pdq_hash" not in df.columns:
         raise ValueError(f"Column `url` or `pdq_hash` not found in dataframe. Found columns: {df.columns}")
 
-    # Check that the indexes are unique
-    non_unique_indexes = df.index[df.index.duplicated()].unique()
-
-    if len(non_unique_indexes) > 0:
-        raise ValueError(f"The DataFrame indexes are not unique. Non-unique indexes: {non_unique_indexes}")
+    # Check if the index is set or an in index column exists
+    if df.index.name is None and "index" not in df.columns:
+        raise ValueError(
+            "The DataFrame index is not set and no index column is found. Please set the index or add "
+            "an 'index' column."
+        )
 
     # Select only the necessary columns (if they exist) and copy these to prevent modifying the original DataFrame
     columns_to_copy = []
@@ -54,8 +52,24 @@ def detect_duplicates(
     if "pdq_hash" in df.columns:
         columns_to_copy.append("pdq_hash")
 
+    if "index" in df.columns:
+        columns_to_copy.append("index")
+
     # The index is always copied
     df = df[columns_to_copy].copy()
+
+    # Check if an index column is set
+    if "index" in df.columns:
+        # Set the index to the index column
+        df = df.set_index("index")
+    elif df.index.name is None:
+        logger.warning("No index column found and no custom index set. Using the DataFrame row numbers as index.")
+
+    # Check that the indexes are unique
+    non_unique_indexes = df.index[df.index.duplicated()].unique()
+
+    if len(non_unique_indexes) > 0:
+        raise ValueError(f"The DataFrame indexes are not unique. Non-unique indexes: {non_unique_indexes}")
 
     # Make sure the df is a dataframe
     if isinstance(df, pd.Series):
@@ -90,5 +104,8 @@ def detect_duplicates(
 
     # Only return rows with any duplicates
     output_df = output_df.dropna(how="all")
+
+    # Add the index as a column put it at as the first column
+    output_df.insert(0, "index", output_df.index)
 
     return output_df

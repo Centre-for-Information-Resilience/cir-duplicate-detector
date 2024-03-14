@@ -10,8 +10,8 @@ def url_series(sample_data):
 
 
 @pytest.fixture
-def expected_output(sample_data_expected_output):
-    return sample_data_expected_output["url_duplicates"].dropna()
+def expected_output(expected_output):
+    return expected_output["url_duplicates"].dropna()
 
 
 def test_find_url_duplicates(url_series, expected_output):

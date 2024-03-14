@@ -10,8 +10,8 @@ def pdq_hash_series(sample_data):
 
 
 @pytest.fixture
-def expected_output(sample_data_expected_output):
-    return sample_data_expected_output[["pdq_hash_duplicates", "pdq_hash_similarity"]].dropna(how="all")
+def expected_output(expected_output):
+    return expected_output[["pdq_hash_duplicates", "pdq_hash_similarity"]].dropna(how="all")
 
 
 # Runn all tests in this file with both duplicate_detection_methods
