@@ -1,6 +1,6 @@
 cfgv==3.4.0 ; python_version >= "3.10" and python_version < "3.12"
 colorama==0.4.6 ; python_version >= "3.10" and python_version < "3.12" and (platform_system == "Windows" or sys_platform == "win32")
-coverage[toml]==7.4.3 ; python_version >= "3.10" and python_version < "3.12"
+coverage[toml]==7.4.4 ; python_version >= "3.10" and python_version < "3.12"
 distlib==0.3.8 ; python_version >= "3.10" and python_version < "3.12"
 exceptiongroup==1.2.0 ; python_version >= "3.10" and python_version < "3.11"
 filelock==3.13.1 ; python_version >= "3.10" and python_version < "3.12"

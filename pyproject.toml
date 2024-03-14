@@ -1,6 +1,6 @@
 [tool.poetry]
 name = 'cir-duplicate-detector'
-version = '0.1.4'
+version = '0.1.5'
 description = "PDQ hash and URL duplicate detector. Developed by Sam Sweere from BigData Repulic as part of their Social Good Initiaive."
 authors = ['Sam Sweere <samsweere@gmail.com>']
 readme = 'README.md'

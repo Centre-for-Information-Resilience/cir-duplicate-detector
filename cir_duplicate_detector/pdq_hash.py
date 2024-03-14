@@ -171,7 +171,7 @@ def pdq_hash_output_formatter(
             results from the duplicate detection.
 
     Returns:
-        pd.DataFrame: DataFrame with columns `pdq_hash_duplicates` and `pdq_hash_similarity`.
+        pd.DataFrame: DataFrame with columns `pdq_hash_duplicates` and `pdq_hash_similarities`.
     """
 
     # Format the duplicate_detection_results into a DataFrame of the desired output structure
@@ -179,8 +179,8 @@ def pdq_hash_output_formatter(
 
     pdq_hash_dup_df["pdq_hash_duplicates"] = pd.NA
     pdq_hash_dup_df["pdq_hash_duplicates"] = pdq_hash_dup_df["pdq_hash_duplicates"].astype(object)
-    pdq_hash_dup_df["pdq_hash_similarity"] = pd.NA
-    pdq_hash_dup_df["pdq_hash_similarity"] = pdq_hash_dup_df["pdq_hash_similarity"].astype(object)
+    pdq_hash_dup_df["pdq_hash_similarities"] = pd.NA
+    pdq_hash_dup_df["pdq_hash_similarities"] = pdq_hash_dup_df["pdq_hash_similarities"].astype(object)
 
     for index, result in zip(pdq_hash_series.index, duplicate_detection_results, strict=True):
         # Format the result into a list of indexes, if no duplicates are found, set the value to pd.NA
@@ -196,10 +196,10 @@ def pdq_hash_output_formatter(
                 if isinstance(pdq_hash_dup_df["pdq_hash_duplicates"][index], list):
                     if item["index"] not in pdq_hash_dup_df["pdq_hash_duplicates"][index] and index != item["index"]:
                         pdq_hash_dup_df.loc[index, "pdq_hash_duplicates"].append(item["index"])
-                        pdq_hash_dup_df.loc[index, "pdq_hash_similarity"].append(dist_normalized)
+                        pdq_hash_dup_df.loc[index, "pdq_hash_similarities"].append(dist_normalized)
                 elif index != item["index"]:
                     pdq_hash_dup_df.loc[index, "pdq_hash_duplicates"] = [item["index"]]
-                    pdq_hash_dup_df.loc[index, "pdq_hash_similarity"] = [dist_normalized]
+                    pdq_hash_dup_df.loc[index, "pdq_hash_similarities"] = [dist_normalized]
                 # Update the duplicate of the duplicate index
                 # First check if the index exists, if not create it
                 if item["index"] not in pdq_hash_dup_df.index:
@@ -207,10 +207,10 @@ def pdq_hash_output_formatter(
                 if isinstance(pdq_hash_dup_df["pdq_hash_duplicates"][item["index"]], list):
                     if index not in pdq_hash_dup_df["pdq_hash_duplicates"][item["index"]] and index != item["index"]:
                         pdq_hash_dup_df.loc[item["index"], "pdq_hash_duplicates"].append(index)
-                        pdq_hash_dup_df.loc[item["index"], "pdq_hash_similarity"].append(dist_normalized)
+                        pdq_hash_dup_df.loc[item["index"], "pdq_hash_similarities"].append(dist_normalized)
                 elif index != item["index"]:
                     pdq_hash_dup_df.loc[item["index"], "pdq_hash_duplicates"] = [index]
-                    pdq_hash_dup_df.loc[item["index"], "pdq_hash_similarity"] = [dist_normalized]
+                    pdq_hash_dup_df.loc[item["index"], "pdq_hash_similarities"] = [dist_normalized]
 
     # Drop all rows that do not have duplicates
     pdq_hash_dup_df = pdq_hash_dup_df.dropna()
@@ -274,9 +274,9 @@ def find_pdq_hash_duplicates(
 
     def empty_output_df() -> pd.DataFrame:
         # Create an empty output dataframe containing the correct index name and dtype
-        empty_output_df = pd.DataFrame(columns=["pdq_hash_duplicates", "pdq_hash_similarity"])
+        empty_output_df = pd.DataFrame(columns=["pdq_hash_duplicates", "pdq_hash_similarities"])
         empty_output_df["pdq_hash_duplicates"] = empty_output_df["pdq_hash_duplicates"].astype(object)
-        empty_output_df["pdq_hash_similarity"] = empty_output_df["pdq_hash_similarity"].astype(object)
+        empty_output_df["pdq_hash_similarities"] = empty_output_df["pdq_hash_similarities"].astype(object)
         empty_output_df.index.name = pdq_hash_series.index.name
         empty_output_df.index = empty_output_df.index.astype(pdq_hash_series.index.dtype)
 

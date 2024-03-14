@@ -11,7 +11,7 @@ def pdq_hash_series(sample_data):
 
 @pytest.fixture
 def expected_output(expected_output):
-    return expected_output[["pdq_hash_duplicates", "pdq_hash_similarity"]].dropna(how="all")
+    return expected_output[["pdq_hash_duplicates", "pdq_hash_similarities"]].dropna(how="all")
 
 
 # Runn all tests in this file with both duplicate_detection_methods
@@ -182,7 +182,7 @@ def test_with_indexes_to_check(pdq_hash_series, pqd_hash_similarity_threshold, d
     expected_output = pd.DataFrame(
         {
             "pdq_hash_duplicates": pd.Series(expected_duplicates, dtype=object),
-            "pdq_hash_similarity": pd.Series(expected_similarities, dtype=object),
+            "pdq_hash_similarities": pd.Series(expected_similarities, dtype=object),
         }
     )
     expected_output.index.name = "index"
@@ -219,7 +219,7 @@ def test_single_index_to_check(pdq_hash_series, pqd_hash_similarity_threshold, d
     expected_output = pd.DataFrame(
         {
             "pdq_hash_duplicates": pd.Series(expected_duplicates, dtype=object),
-            "pdq_hash_similarity": pd.Series(expected_similarities, dtype=object),
+            "pdq_hash_similarities": pd.Series(expected_similarities, dtype=object),
         }
     )
     expected_output.index.name = "index"
@@ -271,7 +271,7 @@ def test_index_to_check_with_empty_hash(pdq_hash_series, pqd_hash_similarity_thr
     expected_output = pd.DataFrame(
         {
             "pdq_hash_duplicates": pd.Series(expected_duplicates, dtype=object),
-            "pdq_hash_similarity": pd.Series(expected_similarities, dtype=object),
+            "pdq_hash_similarities": pd.Series(expected_similarities, dtype=object),
         }
     )
     expected_output.index.name = "index"

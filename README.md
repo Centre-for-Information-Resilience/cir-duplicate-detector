@@ -47,7 +47,7 @@ It takes the following parameters:
         - `index` (string): A unique identifier.
         - `url_duplicates` (list of strings or `None`): Indices with duplicate URLs.
         - `pdq_hash_duplicates` (list of strings or `None`): Indices with perceptual hashes similar within the threshold.
-        - `pdq_hash_similarity` (list of strings or `None`): Hash similarity scores for perceptual hashes within the threshold.
+        - `pdq_hash_similarities` (list of strings or `None`): Hash similarity scores for perceptual hashes within the threshold.
 
 ### Post-processing
 
