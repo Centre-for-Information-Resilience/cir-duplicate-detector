@@ -40,5 +40,5 @@ repos:
     - id: poetry-lock
       files: "pyproject.toml"
     - id: poetry-export
-      args: ["-f", "requirements.txt", "--without-hashes", "--with", "dev", "-o", "requirements.txt"]
+      args: ["-f", "requirements.txt", "--without-hashes", "--with", "test", "-o", "requirements.txt"]
       files: "pyproject.toml"
