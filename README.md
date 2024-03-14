@@ -55,8 +55,8 @@ When `indices_to_check` is provided, only the rows with these indices are checke
 
 ### Example Usage
 ```python
-from cir_duplicate_detector import find_duplicates
-duplicates_df = find_duplicates(df, indices_to_check=None, pdq_hash_similarity_threshold=0.8)
+from cir_duplicate_detector import detect_duplicates
+duplicates_df = detect_duplicates(df, indices_to_check=None, pdq_hash_similarity_threshold=0.8)
 ```
 
 ## PDQ Hash Similarity Detection Approach

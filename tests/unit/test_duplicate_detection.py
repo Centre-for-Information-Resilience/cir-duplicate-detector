@@ -4,11 +4,6 @@ import pytest
 from cir_duplicate_detector import detect_duplicates
 
 
-@pytest.fixture
-def expected_output(sample_data_expected_output):
-    return sample_data_expected_output.dropna(how="all")
-
-
 def test_find_duplicates(sample_data, expected_output, pqd_hash_similarity_threshold):
     data = sample_data
 
@@ -20,6 +15,8 @@ def test_find_duplicates(sample_data, expected_output, pqd_hash_similarity_thres
 def test_find_duplicates_url_only(sample_data, expected_output):
     data = sample_data["url"].to_frame()
     expected_output = expected_output["url_duplicates"].dropna().to_frame()
+    # Insert the index column at the beginning
+    expected_output.insert(0, "index", expected_output.index)
 
     result = detect_duplicates(data)
 
@@ -29,9 +26,27 @@ def test_find_duplicates_url_only(sample_data, expected_output):
 def test_find_duplicates_pdq_hash_only(sample_data, expected_output, pqd_hash_similarity_threshold):
     data = sample_data["pdq_hash"].to_frame()
     expected_output = expected_output[["pdq_hash_duplicates", "pdq_hash_similarity"]].dropna()
+    # Insert the index column at the beginning
+    expected_output.insert(0, "index", expected_output.index)
 
     result = detect_duplicates(df=data, pqd_hash_similarity_threshold=pqd_hash_similarity_threshold)
 
+    pd.testing.assert_frame_equal(result, expected_output)
+
+
+def test_find_duplicates_with_index_column(sample_data, expected_output, pqd_hash_similarity_threshold):
+    index = sample_data.index
+
+    # Add the index as a column
+    sample_data["index"] = index
+
+    # Reset the index
+    sample_data = sample_data.reset_index(drop=True)
+
+    # Call the function
+    result = detect_duplicates(df=sample_data, pqd_hash_similarity_threshold=pqd_hash_similarity_threshold)
+
+    # We expect the same result as before
     pd.testing.assert_frame_equal(result, expected_output)
 
 
