@@ -1,7 +1,7 @@
 [![python](https://img.shields.io/badge/Python-3.11-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
-[![Checked with mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/)
+[![Checked with mypy](https://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/)
 
 # Duplicate Detector - for CIR
 As part of [BigData Republic](https://bigdatarepublic.nl/) Social Good Initiative, [Sam Sweere](https://github.com/SamSweere) developed this package to help the CIR team to detect & mark (possible) duplicate entries. There are two kinds of duplicates that the package can detect:
@@ -16,6 +16,24 @@ For open source intelligence use cases, the PDQ hash can be used to identify sim
 While working at [BigData Republic](https://bigdatarepublic.nl/), [Emiel de Heij](https://github.com/emieldatalytica) has implemented the PDQ hash in the Bellingcat [auto-archiver](https://github.com/bellingcat/auto-archiver). From version v0.5.26 onwards, the auto-archiver has the ability to automatically generate the PDQ hashes for images and videos.
 
 # Usage
+## PyPI Package
+This package is available on PyPI: [cir-duplicate-detector](https://pypi.org/project/cir-duplicate-detector/)
+
+Installation can be done using pip:
+```bash
+pip install cir-duplicate-detector
+```
+or using poetry:
+```bash
+poetry add cir-duplicate-detector
+```
+
+## Example Usage
+```python
+from cir_duplicate_detector import detect_duplicates
+duplicates_df = detect_duplicates(df, indices_to_check=None, pdq_hash_similarity_threshold=0.8)
+```
+## Input and Output Specification
 The `detect_duplicates` function finds url and/or pdq hash duplicates in a DataFrame.
 
 It takes the following parameters:
@@ -53,11 +71,7 @@ It takes the following parameters:
 
 When `indices_to_check` is provided, only the rows with these indices are checked. However, duplicates can be identified with indices not in this list (bi-directional). Consider this when updating the source. Note that only rows with any duplicate found will be returned.
 
-### Example Usage
-```python
-from cir_duplicate_detector import detect_duplicates
-duplicates_df = detect_duplicates(df, indices_to_check=None, pdq_hash_similarity_threshold=0.8)
-```
+
 
 ## PDQ Hash Similarity Detection Approach
 
