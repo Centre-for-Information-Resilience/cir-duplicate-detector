@@ -1,0 +1,65 @@
+name: Automatic Versioning and Publishing
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  version-bump:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main branch
+        uses: actions/checkout@wv4
+        with:
+          ref: 'main'
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install Poetry
+        run: pip install poetry
+
+      - name: Get version from main branch
+        run: echo "MAIN_VERSION=$(poetry version --short)" >> $GITHUB_ENV
+        shell: bash
+
+      - name: Checkout merge request branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Get version from merge request branch
+        run: echo "MR_VERSION=$(poetry version --short)" >> $GITHUB_ENV
+        shell: bash
+
+      - name: Compare versions and take action
+        run: |
+          if [ "$MAIN_VERSION" = "$MR_VERSION" ]; then
+            echo "Version is the same. Performing a minor version bump."
+            poetry version minor
+          elif [ "$MR_VERSION" > "$MAIN_VERSION" ]; then
+            echo "Merge request has a higher version. Keeping it."
+          else
+            echo "Merge request has a lower version. This is an error."
+            exit 1
+          fi
+        shell: bash
+
+      - name: Configure Git
+        if: env.VERSION_BUMPED == 'true'
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add pyproject.toml
+          git commit -m "Minor version bump"
+          git push
+
+      - name: Build and publish package
+        env:
+          POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_API_TOKEN }}
+        run: |
+          poetry build
+          poetry publish --username __token__ --password $POETRY_PYPI_TOKEN_PYPI
