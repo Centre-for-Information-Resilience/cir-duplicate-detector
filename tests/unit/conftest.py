@@ -84,7 +84,7 @@ def expected_output():
             # pd.NA,
             ["UW0004"],
         ],
-        "pdq_hash_similarity": [
+        "pdq_hash_similarities": [
             [1.0, 1.0],
             [1.0, 1.0],
             [1.0, 1.0],

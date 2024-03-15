@@ -25,7 +25,7 @@ def test_find_duplicates_url_only(sample_data, expected_output):
 
 def test_find_duplicates_pdq_hash_only(sample_data, expected_output, pqd_hash_similarity_threshold):
     data = sample_data["pdq_hash"].to_frame()
-    expected_output = expected_output[["pdq_hash_duplicates", "pdq_hash_similarity"]].dropna()
+    expected_output = expected_output[["pdq_hash_duplicates", "pdq_hash_similarities"]].dropna()
     # Insert the index column at the beginning
     expected_output.insert(0, "index", expected_output.index)
 
