@@ -41,8 +41,10 @@ jobs:
           key: pre-commit-4|${{ env.pythonLocation }}|${{ hashFiles('.pre-commit-config.yaml') }}
 
       - name: Run Pre-Commit
+        env:
+          SKIP: poetry-export, poetry-lock, no-commit-to-branch
         run: |
-          poetry run pre-commit run --show-diff-on-failure --color=always --all-files --hook-stage manual SKIP="poetry-export, poetry-lock, no-commit-to-branch"
+          poetry run pre-commit run --show-diff-on-failure --color=always --all-files
 
   run-tests:
     needs: run-pre-commit
