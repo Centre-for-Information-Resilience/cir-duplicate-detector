@@ -1,12 +1,15 @@
 name: Automatic Versioning and Publishing
 
 on:
-  pull_request:
+  pull_request_target:
+    types:
+      - closed
     branches:
       - main
 
 jobs:
-  version-bump:
+  version-bump-and-publish:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - name: Checkout main branch
@@ -38,8 +41,9 @@ jobs:
       - name: Compare versions and take action
         run: |
           if [ "$MAIN_VERSION" = "$MR_VERSION" ]; then
-            echo "Version is the same. Performing a minor version bump."
-            poetry version minor
+            echo "Version is the same. Performing a patch version bump."
+            poetry version patch
+            echo "VERSION_BUMPED=true" >> $GITHUB_ENV
           elif [ "$MR_VERSION" > "$MAIN_VERSION" ]; then
             echo "Merge request has a higher version. Keeping it."
           else
@@ -54,7 +58,7 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add pyproject.toml
-          git commit -m "Minor version bump"
+          git commit -m "Patch version bump"
           git push
 
       - name: Build and publish package
