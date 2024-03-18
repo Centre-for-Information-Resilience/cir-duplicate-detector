@@ -18,11 +18,8 @@ on:
       - main
 
 jobs:
-  version-bump:
-
-
-
-    if: github.event.pull_request.merged == true
+  version-bump-and-publish:
+    if: github.event.pull_request.merged == true && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout main branch
