@@ -49,12 +49,16 @@ jobs:
 
       - name: Compare versions and take action
         run: |
-          if [ "$CURRENT_VERSION" <= "$PIPY_VERSION" ]; then
-            echo "Version is the same or smaller. Performing a patch version bump."
+          # Compare versions by sorting them and checking if the current version is not the latest
+          HIGHEST_VERSION=$(printf "%s\n%s" "$CURRENT_VERSION" "$PIPY_VERSION" | sort -V | tail -n1)
+          if [ "$HIGHEST_VERSION" = "$CURRENT_VERSION" ]; then
+            echo "Merge request has a higher version. Keeping it."
+          else
+            # If the current version is not the highest, we bump the version
+            poetry version $PIPY_VERSION
             poetry version patch
             echo "VERSION_BUMPED=true" >> $GITHUB_ENV
-          elif [ "$CURRENT_VERSION" > "$PIPY_VERSION" ]; then
-            echo "Merge request has a higher version. Keeping it."
+            echo "Bumped version to $(poetry version --short)"
           fi
           echo "Going to publish with version $(poetry version --short)"
         shell: bash
