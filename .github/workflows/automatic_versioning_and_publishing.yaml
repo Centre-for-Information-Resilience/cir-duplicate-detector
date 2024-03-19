@@ -42,7 +42,9 @@ jobs:
 
       - name: Get the latest version from pip
         run: |
-          echo "PIPY_VERSION=$(pip index versions cir-duplicate-detector 2>&1 | grep -v 'WARNING' | awk '/LATEST:/ {print $NF}')" >> $GITHUB_ENV
+          PIPY_VERSION=$(pip index versions cir-duplicate-detector | grep -oP '(?<=cir-duplicate-detector \()\d+\.\d+\.\d+' | head -n 1)
+          echo "Extracted version: $PIPY_VERSION" # For debugging purposes.
+          echo "PIPY_VERSION=$PIPY_VERSION" >> $GITHUB_ENV
         shell: bash
 
       - name: Compare versions and take action
