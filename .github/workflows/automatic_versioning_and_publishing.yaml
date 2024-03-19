@@ -51,7 +51,7 @@ jobs:
         run: |
           # Compare versions by sorting them and checking if the current version is not the latest
           HIGHEST_VERSION=$(printf "%s\n%s" "$CURRENT_VERSION" "$PIPY_VERSION" | sort -V | tail -n1)
-          if [ "$HIGHEST_VERSION" = "$CURRENT_VERSION" ]; then
+          if [ "$HIGHEST_VERSION" = "$CURRENT_VERSION" ]  && [ "$CURRENT_VERSION" != "$PIPY_VERSION" ]; then
             echo "Merge request has a higher version. Keeping it."
           else
             # If the current version is not the highest, we bump the version
