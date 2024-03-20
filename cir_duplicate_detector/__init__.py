@@ -2,7 +2,7 @@ import logging
 
 import pandas as pd
 
-from .pdq_hash_dup_detect import find_pdq_hash_duplicates
+from .pdq_hash import find_pdq_hash_duplicates
 from .url import find_url_duplicates
 
 logger = logging.getLogger(__name__)

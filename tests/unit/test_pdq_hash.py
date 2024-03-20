@@ -1,7 +1,7 @@
 import pandas as pd
 import pytest
 
-from cir_duplicate_detector.pdq_hash_dup_detect import find_pdq_hash_duplicates
+from cir_duplicate_detector.pdq_hash import find_pdq_hash_duplicates
 
 
 @pytest.fixture
