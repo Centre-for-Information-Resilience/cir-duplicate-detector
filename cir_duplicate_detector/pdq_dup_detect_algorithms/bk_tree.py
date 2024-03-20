@@ -9,6 +9,8 @@ import pybktree
 import rapidfuzz
 from tqdm.contrib.concurrent import process_map
 
+from cir_duplicate_detector.utils import calculate_absolute_threshold
+
 logger = logging.getLogger(__name__)
 
 PDQ_HASH_LENGTH = 256
@@ -146,7 +148,7 @@ class PDQHashTree:
             )
 
         # Calculate the absolute threshold
-        n = int(round(PDQ_HASH_LENGTH * (1 - pqd_hash_similarity_threshold)))
+        n = calculate_absolute_threshold(PDQ_HASH_LENGTH, pqd_hash_similarity_threshold)
 
         logger.info(f"Using similarity threshold: {pqd_hash_similarity_threshold} (max {n} bits difference).")
 

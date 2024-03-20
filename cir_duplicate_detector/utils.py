@@ -6,13 +6,25 @@ import pandas as pd
 logger = logging.getLogger(__name__)
 
 
-def hex_to_binary(hex_string: str, length: int | None = None) -> str:
+def calculate_absolute_threshold(pdq_hash_length: int, pqd_hash_similarity_threshold: float) -> int:
+    """Calculates the absolute threshold based on the PDQ hash length and the PQD hash similarity threshold.
+
+    Args:
+        pdq_hash_length (int): The length of the PDQ hash.
+        pqd_hash_similarity_threshold (float): The PQD hash similarity threshold.
+
+    Returns:
+        int: The calculated absolute threshold.
     """
-    Convert a hexadecimal string to a binary string.
+    return int(round(pdq_hash_length * (1 - pqd_hash_similarity_threshold)))
+
+
+def hex_to_binary(hex_string: str, length: int | None = None) -> str:
+    """Converts a hexadecimal string to a binary string.
 
     Args:
         hex_string (str): The hexadecimal string to convert.
-        length (int, optional): The desired length of the binary string. Defaults to None.
+        length (int | None, optional): The desired length of the binary string. Defaults to None.
 
     Returns:
         str: The binary string representation of the hexadecimal string.
@@ -37,14 +49,13 @@ def hex_to_binary(hex_string: str, length: int | None = None) -> str:
 
 
 def drop_literal_series_duplicates(series: pd.Series) -> pd.Series:
-    """
-    Drop all literal duplicate (index and value) rows from a series.
+    """Drops all literal duplicate (index and value) rows from a series.
 
-    Parameters:
-        series (pd.Series): Series to drop duplicates from.
+    Args:
+        series (pd.Series): The series to drop duplicates from.
 
     Returns:
-        pd.Series: Series with all literal duplicates removed.
+        pd.Series: A series with all literal duplicates removed.
     """
 
     # Copy the series to prevent modifying the original Series
@@ -80,14 +91,14 @@ def drop_literal_series_duplicates(series: pd.Series) -> pd.Series:
 
 
 def column_info(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Return basic information about each column in a DataFrame.
+    """Returns basic information about each column in a DataFrame.
 
-    Parameters:
-    - df: pandas DataFrame
+    Args:
+        df (pd.DataFrame): The DataFrame to analyze.
 
     Returns:
-    - info_df: DataFrame containing information about each column
+        pd.DataFrame: A DataFrame containing information about each column, including data type,
+            unique values, missing values, and mode.
     """
     # Copy the DataFrame to prevent modifying the original
     df = df.copy()
@@ -119,7 +130,18 @@ def column_info(df: pd.DataFrame) -> pd.DataFrame:
         mode_freq = (df[col] == mode_val).sum() if mode_val is not None else None
 
         # Append information to the list
-        info_list.append([col, dtype, unique_count, missing_count, missing_abs, missing_percent, mode_val, mode_freq])
+        info_list.append(
+            [
+                col,
+                dtype,
+                unique_count,
+                missing_count,
+                missing_abs,
+                missing_percent,
+                mode_val,
+                mode_freq,
+            ]
+        )
 
     # Convert list to DataFrame
     info_df = pd.DataFrame(
