@@ -8,7 +8,7 @@ import pandas as pd
 import rapidfuzz
 from tqdm.contrib.concurrent import process_map
 
-from cir_duplicate_detector.utils import calculate_absolute_threshold
+from cir_duplicate_detector.pdq_dup_detect_algorithms.utils import calculate_absolute_threshold
 
 logger = logging.getLogger(__name__)
 
