@@ -3,7 +3,7 @@ import time
 import warnings
 from collections.abc import Callable
 from multiprocessing import Pool, cpu_count
-from typing import Any, Int
+from typing import Any
 
 import pandas as pd
 import rapidfuzz
@@ -120,7 +120,7 @@ def hamming_distance(item1: str, item2: str) -> int:
 
 
 def run_in_parallel(
-    worker_func: Callable[..., Any], tasks: tuple | Any, num_workers: Int = None, chunk_size: int = 100
+    worker_func: Callable[..., Any], tasks: tuple | Any, num_workers: int | None = None, chunk_size: int = 100
 ) -> list:
     """Runs tasks in parallel using multiprocessing."""
     if num_workers is None:
