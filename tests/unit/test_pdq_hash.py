@@ -15,13 +15,16 @@ def expected_output(expected_output):
 
 
 # Runn all tests in this file with both duplicate_detection_methods
-@pytest.fixture(params=["pandas", "bk-tree"])
+@pytest.fixture(params=["naive", "bk-tree"])  # TODO: add mih
 def duplicate_detection_method(request):
     return request.param
 
 
 def test_find_pdq_hash_duplicates(
-    pdq_hash_series, expected_output, pqd_hash_similarity_threshold, duplicate_detection_method
+    pdq_hash_series,
+    expected_output,
+    pqd_hash_similarity_threshold,
+    duplicate_detection_method,
 ):
     # Test the default case
     result = find_pdq_hash_duplicates(
@@ -34,7 +37,10 @@ def test_find_pdq_hash_duplicates(
 
 
 def test_with_empty_pdq_hash_series(
-    pdq_hash_series, expected_output, pqd_hash_similarity_threshold, duplicate_detection_method
+    pdq_hash_series,
+    expected_output,
+    pqd_hash_similarity_threshold,
+    duplicate_detection_method,
 ):
     # Test with empty pdq_hash_series
     pdq_hash_series = pdq_hash_series.iloc[0:0]
@@ -53,7 +59,10 @@ def test_with_empty_pdq_hash_series(
 
 
 def test_pdq_hash_series_containing_nan(
-    pdq_hash_series, expected_output, pqd_hash_similarity_threshold, duplicate_detection_method
+    pdq_hash_series,
+    expected_output,
+    pqd_hash_similarity_threshold,
+    duplicate_detection_method,
 ):
     # Replace a pdq hash with an Nan value, everything should work fine
     pdq_hash_series.iloc[0] = pd.NA
@@ -121,7 +130,10 @@ def test_invalid_pdq_hash_series(pdq_hash_series):
 
 
 def test_different_hash_lengths(
-    pdq_hash_series, expected_output, pqd_hash_similarity_threshold, duplicate_detection_method
+    pdq_hash_series,
+    expected_output,
+    pqd_hash_similarity_threshold,
+    duplicate_detection_method,
 ):
     # Increase the size of the 6'th hash, this will affect the relative hamming distance and thus the
     # result. The similarity will be smaller
@@ -235,7 +247,10 @@ def test_single_index_to_check(pdq_hash_series, pqd_hash_similarity_threshold, d
 
 
 def test_with_empty_indexes_to_check(
-    pdq_hash_series, expected_output, pqd_hash_similarity_threshold, duplicate_detection_method
+    pdq_hash_series,
+    expected_output,
+    pqd_hash_similarity_threshold,
+    duplicate_detection_method,
 ):
     # Test with empty indexes_to_check
     indexes_to_check = pdq_hash_series.index[0:0]

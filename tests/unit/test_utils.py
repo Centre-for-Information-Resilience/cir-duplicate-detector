@@ -1,7 +1,7 @@
 import pandas as pd
 import pytest
 
-from cir_duplicate_detector.utils import drop_literal_series_duplicates, hex_to_binary
+from cir_duplicate_detector.pdq_dup_detect_algorithms.utils import drop_literal_series_duplicates, hex_to_binary
 
 
 @pytest.fixture

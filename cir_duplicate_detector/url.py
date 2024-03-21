@@ -9,14 +9,13 @@ logger = logging.getLogger(__name__)
 
 
 def extract_base_url(url: str) -> str:
-    """
-    Extracts the base URL (scheme + netloc) from a URl and converts it to lowercase.
+    """Extracts the base URL (scheme + netloc) from a URL and converts it to lowercase.
 
-    Parameters:
-        url (str): URL to extract the base URL from.
+    Args:
+        url: URL to extract the base URL from.
 
     Returns:
-        str: Base URL in lowercase.
+        The base URL in lowercase.
     """
     url = url.lower()
     parsed_url = urlparse(url)
@@ -31,19 +30,23 @@ def extract_base_url(url: str) -> str:
 
 
 def find_url_duplicates(url_series: pd.Series, indexes_to_check: pd.Series | list[str] = None) -> pd.Series:
-    """
-    Finds duplicate URLs in a DataFrame.
+    """Finds duplicate URLs within a given pandas Series.
 
+    This function identifies duplicate URLs after converting them to their base forms. It optionally
+    limits the search to specified indexes. Note: while URLs not in `indexes_to_check` are not directly
+    checked for duplicates, they can still appear in the duplicates list of an index that is checked.
 
-    Parameters:
-        url_series (pd.Series): Series containing the URLs, note that the index of the Series must be the entry number.
-        indexes_to_check ([str] | None) (optional): Entry numbers to check, defaults to None (check all).
-            Warning: we do not check urls that are not in the indexes_to_check, but we do bidirectionally list
-            the duplicates. This means that an index that is in the `indexes_to_check` can be a duplicate to a
-            index that is not in this list. Both of these indexes will have each other in their duplicates list.
+    Args:
+        url_series: Series containing URLs. Its index must be the entry number.
+        indexes_to_check: Optional; entry numbers to specifically check for duplicates. Defaults to
+            None, meaning all entries will be checked. Be aware that indexes not in this list can still
+            appear as duplicates of checked indexes.
 
     Returns:
-        pd.Series: Series indicating duplicates by a list of indexes. Rows without duplicates are not returned.
+        A Series indicating duplicates by a list of indexes. Rows without duplicates are not returned.
+
+    Raises:
+        ValueError: If the index of the DataFrame is not set, as it is required to tag duplicates.
     """
     # Verify input, check that the index is set
     if url_series.index.name is None:

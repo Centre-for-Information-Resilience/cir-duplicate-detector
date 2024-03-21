@@ -15,6 +15,7 @@ pdqhash = "^0.2.5"
 rapidfuzz = "^3"
 tqdm = "^4"
 pybktree = "^1.1"
+bitarray = "^2.1"
 
 [tool.poetry.group.test.dependencies]
 pytest = "^8.1.1"
