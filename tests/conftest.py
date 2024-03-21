@@ -104,3 +104,9 @@ def expected_output():
 @pytest.fixture
 def pqd_hash_similarity_threshold():
     return 0.9
+
+
+# Runn all tests in this file with both duplicate_detection_methods
+@pytest.fixture(params=["naive", "bk-tree"])  # TODO: add mih
+def duplicate_detection_method(request):
+    return request.param

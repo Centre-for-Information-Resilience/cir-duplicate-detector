@@ -14,12 +14,6 @@ def expected_output(expected_output):
     return expected_output[["pdq_hash_duplicates", "pdq_hash_similarities"]].dropna(how="all")
 
 
-# Runn all tests in this file with both duplicate_detection_methods
-@pytest.fixture(params=["naive", "bk-tree"])  # TODO: add mih
-def duplicate_detection_method(request):
-    return request.param
-
-
 def test_find_pdq_hash_duplicates(
     pdq_hash_series,
     expected_output,

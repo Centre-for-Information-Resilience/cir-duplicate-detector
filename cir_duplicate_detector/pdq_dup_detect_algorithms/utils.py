@@ -2,6 +2,7 @@ import logging
 import time
 import warnings
 from collections.abc import Callable
+from functools import partial
 from multiprocessing import Pool, cpu_count
 from typing import Any
 
@@ -104,6 +105,14 @@ def hamming_distance(item1: str, item2: str) -> int:
     return rapidfuzz.distance.Hamming.distance(item1, item2)
 
 
+def multiprocessing_worker_wrapper(worker_func: Callable[..., Any], task: Any) -> Any:
+    """A wrapper to pass tasks to the worker function appropriately."""
+    if isinstance(task, tuple):
+        return worker_func(*task)
+    else:
+        return worker_func(task)
+
+
 def run_in_parallel(
     worker_func: Callable[..., Any], tasks: tuple | Any, num_workers: int | None = None, chunk_size: int = 100
 ) -> list:
@@ -122,12 +131,8 @@ def run_in_parallel(
         num_workers = cpu_count()
     start_time = time.time()
 
-    def worker_wrapper(task: tuple | Any) -> Any:
-        """A wrapper to pass tasks to the worker function appropriately."""
-        if isinstance(task, tuple):
-            return worker_func(*task)
-        else:
-            return worker_func(task)
+    # Create a new function that includes the worker function as the first argument
+    worker_wrapper = partial(multiprocessing_worker_wrapper, worker_func)
 
     if len(tasks) < chunk_size // 5:
         logger.info("Running single-threaded due to a small number of tasks.")
