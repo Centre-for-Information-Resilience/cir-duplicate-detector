@@ -80,4 +80,4 @@ jobs:
 
       - name: Run Unit Tests with Pytest
         run: |
-          poetry run pytest tests/ --doctest-modules --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=html
+          poetry run pytest tests/unit/ --doctest-modules --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=html
