@@ -2,8 +2,8 @@ import logging
 
 import pandas as pd
 
-from .pdq_hash import find_pdq_hash_duplicates
-from .url import find_url_duplicates
+from cir_duplicate_detector.pdq_hash import find_pdq_hash_duplicates
+from cir_duplicate_detector.url import find_url_duplicates
 
 logger = logging.getLogger(__name__)
 
@@ -14,23 +14,30 @@ def detect_duplicates(
     pqd_hash_similarity_threshold: float = 0.8,
     pdq_duplicate_detection_method: str = "naive",
 ) -> pd.DataFrame:
-    """
-    Detect duplicate entries based on URLs and perceptual hash similarity.
+    """Detects duplicate entries based on URLs and perceptual hash similarity within a DataFrame.
 
-    Parameters:
-    df (pd.DataFrame): Input DataFrame with the following columns:
-        - index (str): Entry number
-        - url (str) (optional): URL
-        - pdq_hash (list(str)) (optional): Perceptual hash
-        Note that either url or pdq_hash must be present.
-    indexes_to_check ([str] | None) (optional): Entry numbers to check, defaults to None (check all).
-    pqd_hash_similarity_threshold (float) (optional): Threshold (percentage) for Hamming distance to determine
-        hash similarity. Where 1.0 is a perfect bit for bit match and 0.0 is no match at all. Defaults to 0.8.
-    pdq_duplicate_detection_method (str) (optional): Method to use for detecting perceptual hash duplicates.
-        Options: "naive", "bk-tree" or "mih". Defaults to "naive". #TODO: check if needed to update
+    This function checks for duplicates by URL and PDQ hash similarity, applying the specified
+    similarity threshold and detection method for perceptual hashes. It supports flexible checks
+    on specific indexes within the DataFrame.
+
+    Args:
+        df: Input DataFrame with 'url' and 'pdq_hash' columns, where each column is optional but
+            at least one must be present. The 'index' column or DataFrame index is used to
+            identify entries.
+        indexes_to_check: Optional; specific entry numbers to check for duplicates. When None,
+            all entries are checked. Defaults to None.
+        pqd_hash_similarity_threshold: Optional; threshold (percentage) for Hamming distance to
+            determine hash similarity, where 1.0 is an exact match and 0.0 is no match at all.
+            Defaults to 0.8.
+        pdq_duplicate_detection_method: Optional; the method to use for detecting perceptual hash
+            duplicates. Options include "naive", "bk-tree", or "mih". Defaults to "naive".
 
     Returns:
-    pd.DataFrame: DataFrame with columns indicating duplicates.
+        A DataFrame with columns indicating duplicates for 'url' and 'pdq_hash', if applicable.
+
+    Raises:
+        ValueError: If neither 'url' nor 'pdq_hash' columns are found in the input DataFrame or if
+            the DataFrame's indexes are not unique.
     """
     # Validate input DataFrame
     if "url" not in df.columns and "pdq_hash" not in df.columns:
