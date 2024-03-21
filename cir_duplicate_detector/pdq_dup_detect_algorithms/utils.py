@@ -1,8 +1,18 @@
 import logging
+import time
+import warnings
+from collections.abc import Callable
+from multiprocessing import Pool, cpu_count
+from typing import Any, Int
 
 import pandas as pd
+import rapidfuzz
 
+# Initialize logger
 logger = logging.getLogger(__name__)
+
+# Global constants
+PDQ_HASH_LENGTH = 256
 
 
 def calculate_absolute_threshold(pdq_hash_length: int, pqd_hash_similarity_threshold: float) -> int:
@@ -87,3 +97,70 @@ def drop_literal_series_duplicates(series: pd.Series) -> pd.Series:
         df.index.name = None
 
     return df[series_name]
+
+
+def hamming_distance(item1: str, item2: str) -> int:
+    """
+    Computes the Hamming distance between two PDQ hash items.
+    Using the rapidfuzz library for speed.
+
+    Parameters:
+        item1 (str): First PDQ hash item.
+        item2 (str): Second PDQ hash item.
+
+    Returns:
+        int: Hamming distance between item1 and item2.
+    """
+
+    # It seems unintuitive that the Hamming distance is computed on the binary strings
+    # However, after trying to use the hamming distance on interegers, numpy arrays and bytes
+    # using python hammingsdistance, numpy hammingsdistance and pybktree hammingdistance
+    # it seems that rapidfuzz is orders of magnitude faster than the other methods
+    return rapidfuzz.distance.Hamming.distance(item1, item2)
+
+
+def run_in_parallel(
+    worker_func: Callable[..., Any], tasks: tuple | Any, num_workers: Int = None, chunk_size: int = 100
+) -> list:
+    """Runs tasks in parallel using multiprocessing."""
+    if num_workers is None:
+        num_workers = cpu_count()
+    start_time = time.time()
+
+    def worker_wrapper(task: tuple | Any) -> Any:
+        """
+        This function is a wrapper for the worker function.
+        It checks if the task is a tuple. If it is, it unpacks the tuple and passes the elements as arguments
+        to the worker function. If the task is not a tuple, it passes the task directly to the worker function.
+        """
+        if isinstance(task, tuple):
+            return worker_func(*task)
+        else:
+            return worker_func(task)
+
+    if len(tasks) < chunk_size // 5:
+        logger.info("Running single-threaded due to a small number of tasks.")
+        results = [worker_wrapper(task) for task in tasks]
+    else:
+        logger.info(f"Running multi-threaded on {num_workers} cores.")
+
+        with Pool(processes=num_workers) as pool:
+            results = list(pool.imap(worker_wrapper, tasks, chunksize=chunk_size))
+    end_time = time.time()
+    logger.info(f"Time taken for parallel execution: {round(end_time - start_time, 2)} seconds")
+    return results
+
+
+def validate_similarity_threshold(threshold: float) -> None:
+    """Validates the similarity threshold value."""
+    if not 0.0 <= threshold <= 1.0:
+        raise ValueError(f"Threshold must be between 0.0 and 1.0, got {threshold}")
+
+
+def check_series_empty(series: pd.Series) -> bool:
+    """Checks if the series is empty or has a single item and logs/warns accordingly."""
+    if len(series) == 0:
+        warnings.warn("The series is empty, no duplicates will be found.", UserWarning, stacklevel=1)
+        logger.warning("The series is empty, no duplicates will be found.")
+        return True
+    return False

@@ -12,7 +12,7 @@ def detect_duplicates(
     df: pd.DataFrame,
     indexes_to_check: (list[str] | None) = None,
     pqd_hash_similarity_threshold: float = 0.8,
-    pdq_duplicate_detection_method: str = "pandas",
+    pdq_duplicate_detection_method: str = "naive",
 ) -> pd.DataFrame:
     """
     Detect duplicate entries based on URLs and perceptual hash similarity.
@@ -27,7 +27,7 @@ def detect_duplicates(
     pqd_hash_similarity_threshold (float) (optional): Threshold (percentage) for Hamming distance to determine
         hash similarity. Where 1.0 is a perfect bit for bit match and 0.0 is no match at all. Defaults to 0.8.
     pdq_duplicate_detection_method (str) (optional): Method to use for detecting perceptual hash duplicates.
-        Options: "pandas" or "bk-tree". Defaults to "pandas".
+        Options: "naive", "bk-tree" or "mih". Defaults to "naive". #TODO: check if needed to update
 
     Returns:
     pd.DataFrame: DataFrame with columns indicating duplicates.

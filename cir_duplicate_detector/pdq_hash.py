@@ -4,13 +4,15 @@ import warnings
 
 import pandas as pd
 
-from cir_duplicate_detector.pdq_dup_detect_algorithms import pandas
+from cir_duplicate_detector.pdq_dup_detect_algorithms import naive_duplicate_detector
 from cir_duplicate_detector.pdq_dup_detect_algorithms.bk_tree import PDQHashTree
-from cir_duplicate_detector.pdq_dup_detect_algorithms.utils import drop_literal_series_duplicates, hex_to_binary
+from cir_duplicate_detector.pdq_dup_detect_algorithms.utils import (
+    PDQ_HASH_LENGTH,
+    drop_literal_series_duplicates,
+    hex_to_binary,
+)
 
 logger = logging.getLogger(__name__)
-
-PDQ_HASH_LENGTH = 256
 
 
 def pdq_hash_output_formatter(
@@ -90,11 +92,13 @@ def find_pdq_hash_duplicates(
         - Explode the pdq_hash column to get a DataFrame with one hash per row. This will result in a DataFrame
             with duplicate indexes with different hashes.
         - Filter the DataFrame to only contain the indexes to check.
-        - Either use the pandas method or the bk-tree method to find the duplicates.
-        - If the pandas method is used, each row is compared to all other rows in the DataFrame.
+        - Either use the n method or the bk-tree method to find the duplicates.
+        - If the naive method is used, each row is compared to all other rows in the DataFrame.
         - If the bk-tree method is used, the following steps are taken:
             - Build a BK-tree from the DataFrame.
             - For each index, find the duplicates in the BK-tree.
+        - If the multi index hashing method is used, the following steps are taken:
+            # TODO:
         - Aggregate the duplicates back to unique indexes.
         - Only return the indexes that are in the indexes_to_check list and have duplicates.
 
@@ -196,15 +200,16 @@ def find_pdq_hash_duplicates(
     # it seems that rapidfuzz is orders of magnitude faster than the other methods
     pdq_hash_series = pdq_hash_series.apply(hex_to_binary, length=PDQ_HASH_LENGTH)
 
-    # There are two methods for finding duplicates, PANDAS and BKTREE
-    # The BKTREE method was implemented first, but the performance over the PANDAS method was minimal
-    # The PANDAS method is simpler and easier to understand. It is also faster for small datasets
+    # There are three methods for finding duplicates, naive, bktree and mih
+    # The bktree method was implemented first, but the performance over the naive method was minimal
+    # The naive method is simpler and easier to understand. It is also faster for small datasets
     # therefore it is the default method
-    if duplicate_detection_method.lower() == "pandas":
-        # Fird the duplicates directly using pandas and rapidfuzz
-        logger.info("Using the pandas method for duplicate detection.")
+    # TODO: update this comment
+    if duplicate_detection_method.lower() == "naive":
+        # Fird the duplicates directly using naive and rapidfuzz
+        logger.info("Using the naive method for duplicate detection.")
 
-        duplicate_detection_results = pandas.get_pdq_fuzzy_duplicates(
+        duplicate_detection_results = naive_duplicate_detector.get_pdq_fuzzy_duplicates(
             pdq_hash_series=pdq_hash_series,
             indexes_to_check=indexes_to_check,
             pqd_hash_similarity_threshold=pqd_hash_similarity_threshold,
@@ -226,6 +231,9 @@ def find_pdq_hash_duplicates(
             pdq_hash_series=pdq_hash_series,
             pqd_hash_similarity_threshold=pqd_hash_similarity_threshold,
         )
+    elif duplicate_detection_method.lower() == "mih":
+        # TODO: Implement the multi index hashing method
+        raise NotImplementedError("The multi index hashing method is not implemented yet.")
     else:
         raise ValueError(f"Unknown duplicate detection method: {duplicate_detection_method}")
 

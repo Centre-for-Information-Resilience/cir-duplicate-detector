@@ -15,7 +15,7 @@ def expected_output(expected_output):
 
 
 # Runn all tests in this file with both duplicate_detection_methods
-@pytest.fixture(params=["pandas", "bk-tree"])
+@pytest.fixture(params=["naive", "bk-tree"])  # TODO: add mih
 def duplicate_detection_method(request):
     return request.param
 
